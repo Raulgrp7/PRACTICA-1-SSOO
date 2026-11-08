@@ -1,23 +1,20 @@
 #include "libreria.h"
 #include <stdio.h>
+#include <stdlib.h>
 
 int head(int N) {
-
-    char (*linea)[1024];
-    char *linea= malloc(N *sizeof(char));
+    char *linea;
     int i;
+    linea = (char *)malloc(1024 * sizeof(char));
 
     for (i = 0; i < N; i++) {
-        if (fgets(linea, sizeof(linea), stdin) == NULL) {
+        if (fgets(linea, 1024, stdin) == NULL) {
             break;  // Ya no quedan más líneas
         }
         fputs(linea, stdout);
     }
-    free(buffer);
-
+    free(linea);
     return 0;
-    
-    
     }
     
     
@@ -25,20 +22,47 @@ int head(int N) {
 
 
 int tail(int N) {
-    char (*linea)[1024];
-    char *linea= malloc(N *sizeof(char));
-    for (int i = 0; i < N; i++) {
-        if (fgets(linea, sizeof(linea), stdin) == NULL){
-            break;
-
-        }
-
-
-
-
+    char **lineas;
+    int i, pos, total, inicio, a_imprimir, indice;
+    lineas = (char **)malloc(N * sizeof(char *));
+    if (lineas == NULL) {
+        return 1;
+    }
+    for (i = 0; i < N; i++) {
+        lineas[i] = (char *)malloc(1024 * sizeof(char));
     }
 
-    
+    pos = 0;
+    total = 0;
+
+    while (fgets(lineas[pos], 1024, stdin) != NULL) {
+        pos++;
+        if (pos == N) {
+            pos = 0; 
+        }
+        total++;
+    }
+
+    if (total < N) {
+        inicio = 0;
+        a_imprimir = total;
+    } else {
+        inicio = pos;
+        a_imprimir = N;
+    }
+
+    for (i = 0; i < a_imprimir; i++) {
+        indice = inicio + i;
+        if (indice >= N) {
+            indice = indice - N; // Si nos pasamos, damos la vuelta al 0
+        }
+        fputs(lineas[indice], stdout);
+    }
+
+    for (i = 0; i < N; i++) {
+        free(lineas[i]); 
+    }
+    free(lineas);        
     return 0;
 }
 
