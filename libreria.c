@@ -24,8 +24,9 @@ int head(int N) {
 
 int tail(int N) {
     char **lineas;
-    int i, pos, total, inicio, a_imprimir, indice;
-    lineas = (char **)malloc(N * sizeof(char *));
+    int i, pos, total, inicio, nImprimir, indice;
+
+    lineas = (char **)malloc(N * sizeof(char *)); //
     if (lineas == NULL) {
         return 1;
     }
@@ -33,34 +34,34 @@ int tail(int N) {
         lineas[i] = (char *)malloc(1024 * sizeof(char));
     }
 
-    pos = 0;
-    total = 0;
+    pos = 0; // Variable donde vamos a escribir la siguiente linea, es decir su posicion
+    total = 0; //Variable del total de lineas leidas
 
-    while (fgets(lineas[pos], 1024, stdin) != NULL) {
-        pos++;
-        if (pos == N) {
+    while (fgets(lineas[pos], 1024, stdin) != NULL) { //Hacemos un while, mientras se le introduzcan lineas a fgets, sea distinto de null por entrada estandar y almacenamos en la memoria lineas
+        pos++; //Incrementamos la variable posicion
+        if (pos == N) { //Si la variable posicion es igual al nuemro de lineas que quiere el usuario, se pone la variable a 0
             pos = 0; 
         }
-        total++;
+        total++; //Incrementamos la variable total de lineas totales leidas
     }
 
-    if (total < N) {
-        inicio = 0;
-        a_imprimir = total;
+    if (total < N) { //Si la variable total(numero de lineas leidas) es menor a N
+        inicio = 0;  //Ponemos la variable inicio a 0
+        nImprimir = total; //Ponemos la variable nImprimir que sea hasta el total de lineas leidas (ya que no hemos llegado hasta N)
     } else {
-        inicio = pos;
-        a_imprimir = N;
+        inicio = pos; //Ponemos la variable inicio a donde se ha quedado apuntando la variable pos
+        nImprimir = N; //Y la variable nImprimir que sea hasta N
     }
 
-    for (i = 0; i < a_imprimir; i++) {
-        indice = inicio + i;
-        if (indice >= N) {
-            indice = indice - N; // Si nos pasamos, damos la vuelta al 0
+    for (i = 0; i < nImprimir; i++) { //Hacemos un bucle para imprimir desde i = 0 hasta la variable nImprimir
+        indice = inicio + i; //Incrementamos la variable indice, con inicio + i, para saber que posicion de la memoria es
+        if (indice >= N) { //Si la variable indice es mayor o igual a N
+            indice = indice - N; // Le restamos a indice N
         }
-        fputs(lineas[indice], stdout);
+        fputs(lineas[indice], stdout); //Imprimimos lineas[indice] por la salida estandar
     }
 
-    for (i = 0; i < N; i++) {
+    for (i = 0; i < N; i++) { //Liberamos la memoria
         free(lineas[i]); 
     }
     free(lineas);        
