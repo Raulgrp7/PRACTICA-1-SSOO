@@ -74,30 +74,15 @@ int tail(int N) {
 
 
 
-
-
-int comparar(const void *a, const void *b) {
-    char *s1 = *(char **)a;
-    char *s2 = *(char **)b;
-
-    if (strlen(s1) < strlen(s2)) {
-        return 1;
-    }
-    if (strlen(s1) > strlen(s2)) {
-        return -1;
-    }
-    return 0;
-}
-
 int longlines(int N) {
     char buffer[1024];
-    char *linea;
     char **lineas;
+    char *aux;
     size_t longitud_actual;
     int contador;
     size_t longitud_mas_pequena;
     int posicion_min;
-    int i;
+    int i, j;
 
     if (N <= 0) {
         return 0;
@@ -108,80 +93,78 @@ int longlines(int N) {
     longitud_mas_pequena = 0;
     posicion_min = 0;
 
-    // Reservo el array de lineas
-    lineas = malloc(N * sizeof(char *));
+    // 1. Reservo toda la memoria al principio (igual que en tail)
+    lineas = (char **)malloc(N * sizeof(char *));
     if (lineas == NULL) {
-        return -1;
+        return 1;
+    }
+    for (i = 0; i < N; i++) {
+        lineas[i] = (char *)malloc(1024 * sizeof(char));
     }
 
-    // Leo linea a linea con fgets
+    // 2. Leo línea a línea con fgets
     while (fgets(buffer, sizeof(buffer), stdin) != NULL) {
 
-        // Quitar el \n del final si lo tiene
-        if (buffer[strlen(buffer) - 1] == '\n') {
-            buffer[strlen(buffer) - 1] = '\0';
-        }
+        longitud_actual = strlen(buffer);
 
-        // Hago el malloc y strcpy a mano para copiar buffer en linea
-        linea = malloc(strlen(buffer) + 1);
-        if (linea == NULL) {
-            return -1;
-        }
-        strcpy(linea, buffer);
-
-        longitud_actual = strlen(linea);
-
-        // Si todavia no hemos llenado el array (contador < N)
+        // Si todavía no hemos llenado el array (contador < N)
         if (contador < N) {
-            lineas[contador] = linea;
+            strcpy(lineas[contador], buffer);
 
-            // Si es la primera linea que metemos
+            // Si es la primera línea que metemos
             if (contador == 0) {
                 longitud_mas_pequena = longitud_actual;
                 posicion_min = 0;
             } else {
-                // Si la que acabamos de meter es mas pequeña que la minima
+                // Si la que acabamos de meter es más pequeña que la mínima
                 if (longitud_actual < longitud_mas_pequena) {
                     longitud_mas_pequena = longitud_actual;
                     posicion_min = contador;
                 }
             }
-            contador = contador + 1;
+            contador++;
         } 
-        // Si ya tenemos N lineas guardadas
+        // Si ya tenemos N líneas guardadas
         else {
-            // Solo nos interesa si es mas larga que la mas corta que tenemos
+            // Solo nos interesa si es más larga que la más corta que tenemos
             if (longitud_actual > longitud_mas_pequena) {
-                free(lineas[posicion_min]);
-                lineas[posicion_min] = linea;
+                strcpy(lineas[posicion_min], buffer);
 
-                // Busco otra vez el minimo recorriendo todo el array
+                // Busco otra vez el mínimo recorriendo todo el array
                 longitud_mas_pequena = strlen(lineas[0]);
                 posicion_min = 0;
 
-                for (i = 0; i < N; i = i + 1) {
+                for (i = 0; i < N; i++) {
                     if (strlen(lineas[i]) < longitud_mas_pequena) {
                         longitud_mas_pequena = strlen(lineas[i]);
                         posicion_min = i;
                     }
                 }
-            } else {
-                // No cabe, la liberamos
-                free(linea);
             }
         }
     }
 
-    // Ordeno al final de mayor a menor con qsort
-    qsort(lineas, contador, sizeof(char *), comparar);
-
-    // Muestro las lineas por pantalla
-    for (i = 0; i < contador; i = i + 1) {
-        fputs(lineas[i], stdout);
-        fputs("\n", stdout);
-        free(lineas[i]);
+    // 3. Ordeno al final de mayor a menor con doble bucle (método de la burbuja)
+    for (i = 0; i < contador - 1; i++) {
+        for (j = i + 1; j < contador; j++) {
+            if (strlen(lineas[i]) < strlen(lineas[j])) {
+                aux = lineas[i];
+                lineas[i] = lineas[j];
+                lineas[j] = aux;
+            }
+        }
     }
 
+    // 4. Muestro las líneas por pantalla (ya llevan su \n incluido)
+    for (i = 0; i < contador; i++) {
+        fputs(lineas[i], stdout);
+    }
+
+    // 5. Libero toda la memoria al final (igual que en tail)
+    for (i = 0; i < N; i++) {
+        free(lineas[i]);
+    }
     free(lineas);
+
     return 0;
 }
