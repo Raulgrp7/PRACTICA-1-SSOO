@@ -93,7 +93,7 @@ int longlines(int N) {
     longitud_mas_pequena = 0;
     posicion_min = 0;
 
-    // 1. Reservo toda la memoria al principio (igual que en tail)
+    // Reservo toda la memoria al principio 
     lineas = (char **)malloc(N * sizeof(char *));
     if (lineas == NULL) {
         return 1;
@@ -102,7 +102,7 @@ int longlines(int N) {
         lineas[i] = (char *)malloc(1024 * sizeof(char));
     }
 
-    // 2. Leo línea a línea con fgets
+    // Leo línea a línea con fgets
     while (fgets(buffer, sizeof(buffer), stdin) != NULL) {
 
         longitud_actual = strlen(buffer);
@@ -144,7 +144,7 @@ int longlines(int N) {
         }
     }
 
-    // 3. Ordeno al final de mayor a menor con doble bucle (método de la burbuja)
+    // Ordeno al final de mayor a menor con doble bucle 
     for (i = 0; i < contador - 1; i++) {
         for (j = i + 1; j < contador; j++) {
             if (strlen(lineas[i]) < strlen(lineas[j])) {
@@ -155,12 +155,12 @@ int longlines(int N) {
         }
     }
 
-    // 4. Muestro las líneas por pantalla (ya llevan su \n incluido)
+    // Muestro las líneas por pantalla 
     for (i = 0; i < contador; i++) {
         fputs(lineas[i], stdout);
     }
 
-    // 5. Libero toda la memoria al final (igual que en tail)
+    // Libero toda la memoria al final 
     for (i = 0; i < N; i++) {
         free(lineas[i]);
     }
