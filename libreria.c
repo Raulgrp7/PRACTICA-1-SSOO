@@ -26,7 +26,7 @@ int tail(int N) {
     char **lineas;
     int i, pos, total, inicio, nImprimir, indice;
 
-    lineas = (char **)malloc(N * sizeof(char *)); //
+    lineas = (char **)malloc(N * sizeof(char *)); //Reservamos la memoria al principio
     if (lineas == NULL) {
         return 1;
     }
@@ -37,9 +37,9 @@ int tail(int N) {
     pos = 0; // Variable donde vamos a escribir la siguiente linea, es decir su posicion
     total = 0; //Variable del total de lineas leidas
 
-    while (fgets(lineas[pos], 1024, stdin) != NULL) { //Hacemos un while, mientras se le introduzcan lineas a fgets, sea distinto de null por entrada estandar y almacenamos en la memoria lineas
+    while (fgets(lineas[pos], 1024, stdin) != NULL) { //Hacemos un while, mientras se le introduzcan lineas a fgets, sea distinto de null y por entrada estandar, almacenamos en la memoria lineas
         pos++; //Incrementamos la variable posicion
-        if (pos == N) { //Si la variable posicion es igual al nuemro de lineas que quiere el usuario, se pone la variable a 0
+        if (pos == N) { //Si la variable posicion es igual al nuemero de lineas que quiere el usuario, se pone la variable pos a 0 para sobreescribir en la posicion inicial ahorrando memoria
             pos = 0; 
         }
         total++; //Incrementamos la variable total de lineas totales leidas
